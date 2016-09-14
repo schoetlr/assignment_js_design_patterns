@@ -38,6 +38,10 @@ var model = {
   }, 
   points: function(){
     return this.matches * 10;
+  },
+
+  gameOver: function(){
+    return $(".matched").length === this.totalCardCount;
   }
 
 };
@@ -98,6 +102,12 @@ var controller = {
     model.unflip();
     
     
+  },
+
+  handleEndGame: function(){
+    if(model.gameOver()){
+      view.displayEndGame();
+    }
   }
 
 
@@ -160,6 +170,7 @@ var view = {
       controller.flipCard(event);
       view.displayPoints();
       view.displayAttempts();
+      controller.handleEndGame();
     })
   },
 
@@ -189,6 +200,10 @@ var view = {
 
     $("img", $one).fadeOut();
     $("img", $two).fadeOut();
+  },
+
+  displayEndGame: function(){
+    $("#end-game").text("YOU WIN, refresh your browser to play again");
   }
 
   
