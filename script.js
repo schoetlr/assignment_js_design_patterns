@@ -4,10 +4,15 @@ var model = {
   flipCount: 0,
 
   flippedCards: 0,
+  totalCardCount: 0,
+  attempts: 0,
+  matches: 0,
 
   flipCard: function(event){
+
     this.flippedCards += 1;
     this.flipCount += 1;
+    this.attempts += 1,
     this.flipped.unshift($(event.target));
   },
 
@@ -17,7 +22,7 @@ var model = {
   hasMatch: function(){
     var $image1 = $("img", this.flipped[0]);
     var $image2 = $("img", this.flipped[1]);
-    //both are undefined
+    
     return $image1.attr("src") === $image2.attr("src");
   },
 
@@ -30,6 +35,9 @@ var model = {
   },
   lastTwo: function(){
     return this.flipped.slice(0,2);
+  }, 
+  points: function(){
+    return this.matches * 10;
   }
 
 };
@@ -53,7 +61,7 @@ var controller = {
       startNum = prompt("How many cards do you want to play with, even number, less than 13, 2 at the minimum");
       startNum = parseInt(startNum);
     }
-
+    model.totalCardCount = startNum;
     this.createCards(startNum);
 
     view.init();
@@ -67,12 +75,17 @@ var controller = {
       if(model.hasMatch()){
         view.displayMatch(model.lastTwo());
         model.flipCount = 0;
+        model.matches += 1;
       } else {
         controller.unflip()
         
       }
     }
 
+  },
+
+  points: function(){
+    return model.points();
   },
 
   createCards: function(startNum){
@@ -137,12 +150,29 @@ var view = {
   unflipCard: function(event){
     $("img", event.target).fadeOut();
   },
-
+  //INITIALZE WITH
   init: function(){
-    $(".card").click(function(event){
-
-      controller.flipCard(event)
+    view.displayAttempts();
+    view.displayPoints();
+    $
+    (".card").click(function(event){
+      
+      controller.flipCard(event);
+      view.displayPoints();
+      view.displayAttempts();
     })
+  },
+
+  displayAttempts: function(){
+    var count = model.attempts;
+
+    $("#attempts").text("Attempts: " + count);
+  },
+
+  displayPoints: function(){
+    var count = controller.points();
+    console.log(count);
+    $("#points").text(count + " Points");
   },
 
   displayMatch: function(matched){
